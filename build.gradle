@@ -6,15 +6,21 @@ plugins {
 
 bootJar.enabled = false
 
-subprojects {
+allprojects {
     apply plugin: 'java'
-    apply plugin: 'java-library'
+//    apply plugin: 'java-library'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
     group = 'org.project'
     version = '0.0.1-SNAPSHOT'
 
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(17)
@@ -25,10 +31,6 @@ subprojects {
         compileOnly {
             extendsFrom annotationProcessor
         }
-    }
-
-    repositories {
-        mavenCentral()
     }
 
     dependencies {
