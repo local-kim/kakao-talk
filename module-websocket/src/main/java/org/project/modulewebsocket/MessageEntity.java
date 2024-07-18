@@ -13,5 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MessageEntity {
 
+    private Long roomId;
     private String body;
 }
