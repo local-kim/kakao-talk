@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.1'
-    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 bootJar.enabled = false
@@ -35,6 +35,7 @@ subprojects {
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter'
+//        implementation 'org.springframework.boot:spring-boot-starter-web'
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -55,12 +56,25 @@ project(':module-common') {
     }
 }
 
+project(':module-core') {
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+    }
+}
+
 project(':module-websocket') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':module-core')
 
         implementation 'org.springframework.boot:spring-boot-starter-websocket'
-        implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     }
 }
@@ -68,9 +82,10 @@ project(':module-websocket') {
 project(':module-api') {
     dependencies {
         implementation project(':module-common')
+        implementation project(':module-core')
 
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        runtimeOnly 'com.mysql:mysql-connector-j'
+//        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//        runtimeOnly 'com.mysql:mysql-connector-j'
     }
 }

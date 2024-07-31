@@ -3,12 +3,12 @@ server:
 
 spring:
   application.name: module-api
-  datasource:
-    url: jdbc:mysql://localhost:3306/kakao_talk
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/kakao_talk
+#    username: root
+#    password: root
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 
 logging:
   level:
-    root: info
+    root: debug

@@ -1,4 +1,5 @@
 rootProject.name = 'kakao-talk'
 include 'module-common'
+include 'module-core'
 include 'module-websocket'
 include 'module-api'
