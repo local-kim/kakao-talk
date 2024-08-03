@@ -2,6 +2,19 @@ version: '3.8'
 
 services:
 
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kakao_talk
+      TZ: Asia/Seoul
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
   mongodb:
     image: mongo
     container_name: mongodb
@@ -24,17 +37,6 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongodb:27017/
       ME_CONFIG_BASICAUTH: false
-
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: kakao_talk
-    volumes:
-      - mysql-data:/var/lib/mysql
 
   redis:
     image: redis:latest

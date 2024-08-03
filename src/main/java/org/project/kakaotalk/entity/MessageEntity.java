@@ -1,17 +1,22 @@
 package org.project.kakaotalk.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.project.kakaotalk.global.enums.MessageTypeEnum;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Document(collection = "message")
 public class MessageEntity {
 
+    @Id
+    private String id;
+
     private Long roomId;
-    private String body;
+
+    private Long userId;
+
+    private MessageTypeEnum type;
+
+    private String content;
 }
