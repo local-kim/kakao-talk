@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum CommonErrorCode implements ErrorCode {
+public enum ErrorEnum implements ErrorCode {
 
     // 4xx Client Errors
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "E400", "Bad Request"),

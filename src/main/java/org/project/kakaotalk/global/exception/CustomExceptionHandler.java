@@ -11,14 +11,29 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+
         ErrorResponse errorResponse = ErrorResponse.builder()
             .code(e.getErrorCode().getCode())
             .message(e.getMessage())
             .build();
 
-        log.error(e.toString());
+        log.error(e.getMessage(), e);
 
         return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+            .body(errorResponse);
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .code(ErrorEnum.INTERNAL_SERVER_ERROR.getCode())
+            .message(e.getMessage())
+            .build();
+
+        log.error(e.getMessage(), e);
+
+        return ResponseEntity.status(ErrorEnum.INTERNAL_SERVER_ERROR.getHttpStatus())
             .body(errorResponse);
     }
 }
