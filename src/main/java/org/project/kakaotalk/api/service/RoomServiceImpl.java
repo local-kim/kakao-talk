@@ -13,7 +13,6 @@ import org.project.kakaotalk.repository.ParticipantRepository;
 import org.project.kakaotalk.repository.RoomRepository;
 import org.project.kakaotalk.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoomServiceImpl implements RoomService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ChannelTopic channelTopic;
 
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
@@ -37,6 +35,8 @@ public class RoomServiceImpl implements RoomService {
     @Transactional
     @Override
     public CreateRoomOutputDto createRoom(CreateRoomInputDto input) {
+
+        // TODO : PRIVATE, GROUP 채팅 모두 고려
 
         RoomEntity roomEntity = RoomEntity.builder()
             .type(RoomTypeEnum.PRIVATE)
@@ -68,7 +68,7 @@ public class RoomServiceImpl implements RoomService {
         participantRepository.save(participantEntity2);
 
         // 채팅방 발행 - /sub/user/{userId}
-//        redisTemplate.convertAndSend(channelTopic.getTopic(), "publish room");
+        redisTemplate.convertAndSend("room", roomEntity);
 
         return CreateRoomOutputDto.builder()
             .roomId(roomEntity.getId())

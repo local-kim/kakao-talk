@@ -14,24 +14,34 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(
-        RedisConnectionFactory connectionFactory,
-        MessageListenerAdapter listenerAdapter,
-        ChannelTopic channelTopic
-    ) {
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory,
+        MessageListenerAdapter messageListenerAdapter,
+        MessageListenerAdapter roomListenerAdapter) {
+
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(listenerAdapter, channelTopic);
+        container.addMessageListener(messageListenerAdapter, new ChannelTopic("message"));
+        container.addMessageListener(roomListenerAdapter, new ChannelTopic("room"));
         return container;
     }
 
     /**
-     * pub/sub에 사용할 MessageListner와 메서드를 정의하는 메서드
+     * message 채널을 구독할 MessageListner를 정의하는 메서드
      * @param subscriber
      * @return
      */
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
+    public MessageListenerAdapter messageListenerAdapter(RedisMessageSubscriber subscriber) {
+        return new MessageListenerAdapter(subscriber, "onMessage");
+    }
+
+    /**
+     * room 채널을 구독할 MessageListner를 정의하는 메서드
+     * @param subscriber
+     * @return
+     */
+    @Bean
+    public MessageListenerAdapter roomListenerAdapter(RedisRoomSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
@@ -42,10 +52,5 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate;
-    }
-
-    @Bean
-    public ChannelTopic channelTopic() {
-        return new ChannelTopic("chat");
     }
 }
