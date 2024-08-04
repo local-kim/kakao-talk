@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.project.kakaotalk.global.enums.RoomTypeEnum;
 
 @Getter
@@ -20,6 +21,7 @@ import org.project.kakaotalk.global.enums.RoomTypeEnum;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@DynamicUpdate
 @Table(name = "room")
 @Entity
 public class RoomEntity extends BaseEntity {
