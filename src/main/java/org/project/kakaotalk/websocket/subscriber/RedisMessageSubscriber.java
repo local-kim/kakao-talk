@@ -1,10 +1,10 @@
-package org.project.kakaotalk.config;
+package org.project.kakaotalk.websocket.subscriber;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.kakaotalk.entity.RoomEntity;
+import org.project.kakaotalk.entity.MessageEntity;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class RedisRoomSubscriber implements MessageListener {
+public class RedisMessageSubscriber implements MessageListener {
 
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -24,9 +24,9 @@ public class RedisRoomSubscriber implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             String body = redisTemplate.getStringSerializer().deserialize(message.getBody());
-            RoomEntity roomEntity = objectMapper.readValue(body, RoomEntity.class);
+            MessageEntity messageEntity = objectMapper.readValue(body, MessageEntity.class);
 
-            messagingTemplate.convertAndSend("/sub/room/2", roomEntity);   // TODO: 2 -> userId로 변경
+            messagingTemplate.convertAndSend("/sub/message/" + messageEntity.getRoomId(), messageEntity.getContent());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -1,5 +1,7 @@
 package org.project.kakaotalk.config;
 
+import org.project.kakaotalk.websocket.subscriber.RedisMessageSubscriber;
+import org.project.kakaotalk.websocket.subscriber.RedisRoomSubscriber;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

@@ -1,4 +1,4 @@
-package org.project.kakaotalk.websocket.service;
+package org.project.kakaotalk.websocket.publisher;
 
 import lombok.RequiredArgsConstructor;
 import org.project.kakaotalk.entity.MessageEntity;

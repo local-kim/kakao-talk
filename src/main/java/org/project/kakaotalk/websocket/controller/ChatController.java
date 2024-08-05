@@ -2,8 +2,8 @@ package org.project.kakaotalk.websocket.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.kakaotalk.websocket.service.ChatService;
 import org.project.kakaotalk.entity.MessageEntity;
+import org.project.kakaotalk.websocket.publisher.ChatService;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -35,7 +35,6 @@ public class ChatController {
      * @return MessageEntity를 보냄
      */
     @MessageMapping("/message/{roomId}")
-//    @SendTo("/sub/message/{roomId}")  // Redis를 메세지 브로커로 사용하면 불필요
     public void sendMessage(@DestinationVariable Long roomId, MessageEntity message) {
         chatService.sendMessage(roomId, message);
     }
