@@ -1,8 +1,11 @@
 package org.project.kakaotalk.api.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.project.kakaotalk.api.dto.input.CreateRoomInputDto;
 import org.project.kakaotalk.api.dto.output.CreateRoomOutputDto;
+import org.project.kakaotalk.api.dto.output.FindAllRoomsByUserOutputDto;
+import org.project.kakaotalk.api.dto.output.FindAllRoomsByUserOutputDto.FindAllRoomsByUserInnerRoomOutputDto;
 import org.project.kakaotalk.entity.ParticipantEntity;
 import org.project.kakaotalk.entity.RoomEntity;
 import org.project.kakaotalk.entity.UserEntity;
@@ -12,6 +15,7 @@ import org.project.kakaotalk.global.exception.ErrorEnum;
 import org.project.kakaotalk.repository.ParticipantRepository;
 import org.project.kakaotalk.repository.RoomRepository;
 import org.project.kakaotalk.repository.UserRepository;
+import org.project.kakaotalk.websocket.dto.PublishRoomDto;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,24 +58,45 @@ public class RoomServiceImpl implements RoomService {
 
         // insert 참여(초대한 사람, 초대받은 사람)
         ParticipantEntity participantEntity1 = ParticipantEntity.builder()
-            .room(roomEntity)
-            .user(inviterEntity)
+            .roomEntity(roomEntity)
+            .userEntity(inviterEntity)
             .build();
 
         participantRepository.save(participantEntity1);
 
         ParticipantEntity participantEntity2 = ParticipantEntity.builder()
-            .room(roomEntity)
-            .user(inviteeEntity)
+            .roomEntity(roomEntity)
+            .userEntity(inviteeEntity)
             .build();
 
         participantRepository.save(participantEntity2);
 
-        // 채팅방 발행 - /sub/user/{userId}
-        redisTemplate.convertAndSend("room", roomEntity);
+        // 채팅방 발행 - /sub/room/{userId}
+        PublishRoomDto publishRoomDto = PublishRoomDto.builder()
+            .roomEntity(roomEntity)
+            .userIdList(List.of(inviteeEntity.getId()))
+            .build();
+
+        redisTemplate.convertAndSend("room", publishRoomDto);
 
         return CreateRoomOutputDto.builder()
             .roomId(roomEntity.getId())
+            .build();
+    }
+
+    @Override
+    public FindAllRoomsByUserOutputDto findAllRoomsByUser(Long userId) {
+
+        List<FindAllRoomsByUserOutputDto.FindAllRoomsByUserInnerRoomOutputDto> roomList = participantRepository.findAllByUser(userId).stream().map(room ->
+            FindAllRoomsByUserInnerRoomOutputDto.builder()
+                .roomId(room.getRoomId())
+                .title(room.getTitle())
+                .participantCount(room.getParticipantCount())
+                .build()
+        ).toList();
+
+        return FindAllRoomsByUserOutputDto.builder()
+            .roomList(roomList)
             .build();
     }
 }
