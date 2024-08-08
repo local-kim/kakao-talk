@@ -26,8 +26,8 @@ public class RedisRoomSubscriber implements MessageListener {
             String body = redisTemplate.getStringSerializer().deserialize(message.getBody());
             PublishRoomDto publishRoomDto = objectMapper.readValue(body, PublishRoomDto.class);
 
-            publishRoomDto.getUserEntityList().forEach(user ->
-                    messagingTemplate.convertAndSend("/sub/room/" + user.getId(), publishRoomDto.getRoomEntity())   // TODO: 2 -> userId로 변경
+            publishRoomDto.getUserIdList().forEach(userId ->
+                    messagingTemplate.convertAndSend("/sub/room/" + userId, publishRoomDto.getRoomEntity())   // TODO: 2 -> userId로 변경
             );
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
